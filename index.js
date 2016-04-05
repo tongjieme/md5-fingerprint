@@ -3,11 +3,15 @@ var fe     = require('fs-extra');
 var md5ify = require('md5ify');
 var globby = require('globby');
 var async  = require('async');
+var Path   = require("path");
 
 var noop = function () {
 
 };
+
 var getOutput = function (url, cb) {
+    // url:  the file path
+    // cb:   callback
     fs.readFile(url, "utf8", function (err, data) {
         if (err) throw err;
 
@@ -24,6 +28,10 @@ var getOutput = function (url, cb) {
                 match   = v[0],
                 e_index = v.index + match.length,
                 path    = v[1];
+
+            var dir = Path.dirname(url);
+            path    = Path.resolve(dir, path);
+            // path:    the file path for md5ing
 
             data = data.replace(match, getMd5(path));
         });
@@ -67,7 +75,7 @@ var filesToFolder = function (paths, dest, cb) {
             async.map(paths, function (item, cb) {
                 convert(item, dest + item, cb);
             }, function (err, result) {
-                if(err) throw err;
+                if (err) throw err;
             });
         });
     });
