@@ -1,5 +1,8 @@
 #Quick Examples
 ```javascript
+npm install md5-fingerprint --save
+```
+```javascript
 var md5Fingerprint = require('md5-fingerprint');
 
 md5Fingerprint.filesToFolder(['html/**/home.html'], 'dest/', function(err){
