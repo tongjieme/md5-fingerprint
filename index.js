@@ -16,7 +16,7 @@ var getOutput = function (url, cb) {
         if (err) throw err;
 
 
-        var regex = /__md5\([\'\"]([\w\./]*)[\'\"]\)/g;
+        var regex = /__md5\([\'\"]([-\w\./]*)[\'\"]\)/g;
 
         var r = [];
         while (m = regex.exec(data)) {
@@ -56,24 +56,24 @@ var getMd5 = function (path) {
 };
 
 var convert = function (url, dest, cb) {
-    getOutput(url, function (err, data) {
-        // console.log(data);
-        cb = cb || noop;
 
-
-        fe.outputFile(dest, data, cb);
-
-
-    });
 };
 
-var filesToFolder = function (paths, dest, cb) {
+var filesToFolder = function (paths, dest, noDir, cb) {
     cb = cb || noop;
+
+    if(typeof noDir == "function") {
+        cb = noDir;
+        noDir = "";
+    }
 
     globby(paths).then(function (paths) {
         async.map(paths, getOutput, function (err, results) {
-            async.map(paths, function (item, cb) {
-                convert(item, dest + item, cb);
+            async.map(paths, function (path, cb) {
+                getOutput(path, function (err, data) {
+                    cb = cb || noop;
+                    fe.outputFile(dest + path.replace(noDir, ""), data, cb);
+                });
             }, function (err, result) {
                 if (err) throw err;
             });
