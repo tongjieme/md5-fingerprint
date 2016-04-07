@@ -15,14 +15,34 @@ var getOutput = function (url, cb) {
     fs.readFile(url, "utf8", function (err, data) {
         if (err) throw err;
 
-
-        var regex = /__md5\([\'\"]([-\w\./]*)[\'\"]\)/g;
-
+        // ?__md5()
+        var regex = /[\"\']([\w\/:\.=_\-]*)\?__md5_relative\([\'\"]?([\w\.\/]*)[\'\"]?\)[\"\']/g;
         var r = [];
         while (m = regex.exec(data)) {
             r.push(m);
         }
+        r.forEach(function (v) {
+            var s_index = v.index,
+                match   = v[0],
+                e_index = v.index + match.length,
+                path    = v[1],
+                relativePath = v[2];
 
+            var dir = Path.dirname(url);
+            path    = Path.resolve(dir, relativePath, path);
+            // path:    the file path for md5ing
+
+            data = data.replace(match, '"' + v[1] + '?' + getMd5(path) + '"');
+        });
+
+
+
+        // ?__md5('path')
+        var regex = /__md5\([\'\"]([-\w\./]*)[\'\"]\)/g;
+        var r = [];
+        while (m = regex.exec(data)) {
+            r.push(m);
+        }
         r.forEach(function (v) {
             var s_index = v.index,
                 match   = v[0],
@@ -76,6 +96,7 @@ var filesToFolder = function (paths, dest, noDir, cb) {
                 });
             }, function (err, result) {
                 if (err) throw err;
+                cb();
             });
         });
     });
