@@ -1,4 +1,4 @@
-#Quick Examples
+# Quick Examples
 ```javascript
 npm install md5-fingerprint --save
 ```
@@ -11,7 +11,7 @@ md5Fingerprint.filesToFolder(['html/**/home.html'], 'dest/', 'html', function(er
 });
 ```
 
-##Before
+## Before
 ```html
 html/home.html
 <html>
@@ -21,7 +21,7 @@ html/home.html
 </html>
 ```
 
-##After
+## After
 ```html
 dest/home.html
 <html>
@@ -31,13 +31,13 @@ dest/home.html
 </html>
 ```
 
-#Options
+# Options
 md5Fingerprint.filesToFolder(paths, dest, noDir, cb);
-##paths<Array>
+## paths<Array>
 Files paths to proccess
-##dest<String>
+## dest<String>
 The output destination
-##noDir<String>
+## noDir<String>
 Do not generate directory. i.e. 'html' 'src'
-##cb<function>
+## cb<function>
 The callback function after process complete
